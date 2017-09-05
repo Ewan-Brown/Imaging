@@ -34,7 +34,7 @@ public class FastImaging extends JPanel implements Runnable,KeyListener{
 	static int ticks = 0;
 	static Random rand = new Random();
 	static boolean paused = false;
-	static int[][][] RGBs;
+	static int[][][] RGBs; //TODO Have a single array of bit shifted RGB, then to swap r/g/bs just bit shift by 2^s and swap? (binary logic swapping???)
 	static int[][][] originalRGBs;
 	static boolean[] keySet = new boolean[256];
 	static ExecutorService e = Executors.newFixedThreadPool(4);
