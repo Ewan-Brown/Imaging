@@ -1,7 +1,5 @@
 package Imaging;
 
-import static Imaging.FastImaging.RGBs;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -21,7 +19,7 @@ public class Worker implements Callable<BufferedImage>{
 		this.y = y;
 		bi = new BufferedImage(w,h,BufferedImage.TYPE_3BYTE_BGR);
 	}
-	
+
 	public BufferedImage call() throws Exception {
 		//return image
 		Graphics g = bi.getGraphics();
@@ -29,8 +27,7 @@ public class Worker implements Callable<BufferedImage>{
 			for(int j = 0; j < h;j++){
 				int X = i + x;
 				int Y = j + y;
-				
-				g.setColor(new Color(RGBs[X][Y][0],RGBs[X][Y][1],RGBs[X][Y][2]));
+				g.setColor(new Color(FastImaging.Fast[1 - FastImaging.current].getRGB(X, Y)));
 				g.fillRect(i, j, 1, 1);
 			}
 		}

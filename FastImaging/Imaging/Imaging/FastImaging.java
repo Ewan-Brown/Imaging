@@ -1,5 +1,6 @@
 package Imaging;
 
+import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -38,6 +39,8 @@ public class FastImaging extends JPanel implements Runnable,KeyListener{
 	static int[][][] originalRGBs;
 	static boolean[] keySet = new boolean[256];
 	static ExecutorService e = Executors.newFixedThreadPool(4);
+	static FastRGB Fast[] = new FastRGB[2];
+	static int current = 0;
 	public static BufferedImage scale( BufferedImage sbi,  int imageType,  int dWidth,  int dHeight,  double fWidth,  double fHeight) {
 		BufferedImage dbi = null;
 		if(sbi != null) {
@@ -64,7 +67,7 @@ public class FastImaging extends JPanel implements Runnable,KeyListener{
 		i = img;
 		w = i.getWidth();
 		h = i.getHeight();
-		int mW = 200;
+		int mW = 350;
 		if(w > mW){
 			JOptionPane infoPane = new JOptionPane();
 			infoPane.setMessage("Image is too big, do you want it resized?");
@@ -92,6 +95,8 @@ public class FastImaging extends JPanel implements Runnable,KeyListener{
 			h = i.getHeight();
 
 		}
+		Fast[0] = new FastRGB(i);
+		Fast[1] = new FastRGB(i);
 		JFrame fr = new JFrame();
 		FastImaging god = new FastImaging();
 		god.addKeyListener(god);
@@ -143,100 +148,66 @@ public class FastImaging extends JPanel implements Runnable,KeyListener{
 		ticks++;
 		cooldown--;
 		//Multithread this too?
+		int g = 1 - current;
 		for(int x = 0; x < w;x++){
 			for(int y = 0; y < h;y++){	
-				if(keySet[KeyEvent.VK_P]){
-					if(x % 3 > 1 || y % 3 > 1){
-						continue;
-					}
-				}
-				if(keySet[KeyEvent.VK_O]){
-					int m = 0;
-					for(int i = 1; i < 3;i++){
-						int l = RGBs[x][y][i];
-						if(l > RGBs[x][y][m]){
-							m = i;
-						}
-					}
-					for(int i = 0; i < 3;i++){
-						if(i == m){
-							RGBs[x][y][i] = 255;
-						}
-						else{
-							RGBs[x][y][i] = 0;
-						}
-					}
-				}
-				if(keySet[KeyEvent.VK_R]){
-					for(int i = 0; i < 3;i++){
-						int d = originalRGBs[x][y][i] - RGBs[x][y][i];
-						int s = (int) Math.signum(d);
-						if(Math.abs(d) > 3){
-							RGBs[x][y][i] += s * 3;
-						}
-						else{
-							RGBs[x][y][i] += s;
-						}
-					}
-				}
-				else if(!paused){
-					int s = rand.nextInt(3);
-					s = 1;
-					int X = rand.nextInt(5) - 2;
-					int Y = rand.nextInt(5) - 2;
-					X = 0;
-					Y = 0;
-					if(keySet[KeyEvent.VK_UP]){
-						Y =  1;
-					}
-					if(keySet[KeyEvent.VK_DOWN]){
-						Y = -1;
-					}
-					if(keySet[KeyEvent.VK_LEFT]){
-						X = 1;
-					}
-					if(keySet[KeyEvent.VK_RIGHT]){
-						X = -1;
-					}
-					if(keySet[KeyEvent.VK_CONTROL]){
-						X *= 3;
-						Y *= 3;
-					}
-					if(keySet[KeyEvent.VK_SHIFT]){
-						X *= 2;
-						Y *= 2;
-					}
-					int nX = x + X;
-					int nY = y + Y;
-					int c = 1000;
-					//					if(keySet[KeyEvent.VK_B]){
-					//						c -= 8;
-					//					}
-					//					if(keySet[KeyEvent.VK_V]){
-					//						c += 40;
-					//					}
-					if((rand.nextInt(100) < c)){
-						if(nX < 0){
-							nX = w + nX;
-						}
-						if(nY < 0){
-							nY = h + nY;
-						}
-						if(nX >= w){
-							nX = nX % w;
-						}
-						if(nY >= h){
-							nY = nY % h;
-						}
-						RGBs[x][y][s] = RGBs[nX][nY][s];
-						RGBs[nX][nY][s] = RGBs[x][y][s];
-					}
+				if(!paused){
+//					int s = rand.nextInt(3);
+//					s = 1;
+//					int X = rand.nextInt(5) - 2;
+//					int Y = rand.nextInt(5) - 2;
+////					X = 0;
+////					Y = 0;
+//					if(keySet[KeyEvent.VK_UP]){
+//						Y =  1;
+//					}
+//					if(keySet[KeyEvent.VK_DOWN]){
+//						Y = -1;
+//					}
+//					if(keySet[KeyEvent.VK_LEFT]){
+//						X = 1;
+//					}
+//					if(keySet[KeyEvent.VK_RIGHT]){
+//						X = -1;
+//					}
+//					if(keySet[KeyEvent.VK_CONTROL]){
+//						X *= 3;
+//						Y *= 3;
+//					}
+//					if(keySet[KeyEvent.VK_SHIFT]){
+//						X *= 2;
+//						Y *= 2;
+//					}
+//					int nX = x + X;
+//					int nY = y + Y;
+//					int c = 10;
+//					if(keySet[KeyEvent.VK_B]){
+//						c += 80;
+//					}
+//					if(keySet[KeyEvent.VK_V]){
+//						c += 100;
+//					}
+//					if((rand.nextInt(100) < c)){
+//						if(nX < 0){
+//							nX = w + nX;
+//						}
+//						if(nY < 0){
+//							nY = h + nY;
+//						}
+//						if(nX >= w){
+//							nX = nX % w;
+//						}
+//						if(nY >= h){
+//							nY = nY % h;
+//						} 
+//						int RGB = Fast[g].getRGB(nX, nY);
+//						Fast[current].setRGB(nX,nY,Fast[g].getRGB(x, y),2);
+//						Fast[current].setRGB(x, y, RGB,1);
+//					}
 				}
 			}
-
-
 		}
-
+		current = g;
 
 	}
 	public static void doImages(){
